@@ -33,21 +33,18 @@ export class GameScene extends Phaser.Scene {
   }
   
   preload(): void {
-    // Load special effect sprites
-    this.load.image('special_horizontal', 'assets/special_horizontal.png');
-    this.load.image('special_vertical', 'assets/special_vertical.png');
-    this.load.image('special_bomb', 'assets/special_bomb.png');
-    this.load.image('special_rainbow', 'assets/special_rainbow.png');
-    // Load particle
-    this.load.image('particle', 'assets/particle.png');
-    // Load UI elements
-    this.load.image('button', 'assets/button.png');
-    // Load sounds
-    this.load.audio('swap', 'assets/sounds/swap.mp3');
-    this.load.audio('match', 'assets/sounds/match.mp3');
-    this.load.audio('special', 'assets/sounds/special.mp3');
-    this.load.audio('rotate', 'assets/sounds/rotate.mp3');
-    this.load.audio('gameover', 'assets/sounds/gameover.mp3');
+    // Commented out all asset loading to avoid missing asset errors
+    // this.load.image('special_horizontal', 'assets/special_horizontal.png');
+    // this.load.image('special_vertical', 'assets/special_vertical.png');
+    // this.load.image('special_bomb', 'assets/special_bomb.png');
+    // this.load.image('special_rainbow', 'assets/special_rainbow.png');
+    // this.load.image('particle', 'assets/particle.png');
+    // this.load.image('button', 'assets/button.png');
+    // this.load.audio('swap', 'assets/sounds/swap.mp3');
+    // this.load.audio('match', 'assets/sounds/match.mp3');
+    // this.load.audio('special', 'assets/sounds/special.mp3');
+    // this.load.audio('rotate', 'assets/sounds/rotate.mp3');
+    // this.load.audio('gameover', 'assets/sounds/gameover.mp3');
   }
   
   create(): void {
@@ -254,7 +251,7 @@ export class GameScene extends Phaser.Scene {
     }
     
     // Play sound
-    this.sound.play('rotate');
+    // this.sound.play('rotate');
     
     // Rotate the board
     this.gameState = GameState.ROTATING;
@@ -274,7 +271,7 @@ export class GameScene extends Phaser.Scene {
       this.movesText.setText(`Moves: ${this.movesLeft}`);
     }
     // Play sound
-    this.sound.play('swap');
+    // this.sound.play('swap');
     // Clear selection
     if (this.selectedCandy) {
       this.selectedCandy.setSelected(false);
@@ -321,7 +318,7 @@ export class GameScene extends Phaser.Scene {
     
     if (matches.length > 0) {
       // Play match sound
-      this.sound.play('match');
+      // this.sound.play('match');
       
       // Check for special candies
       checkForSpecialCandy(matches);
@@ -424,7 +421,7 @@ export class GameScene extends Phaser.Scene {
   
   private gameOver(): void {
     // Play game over sound
-    this.sound.play('gameover');
+    // this.sound.play('gameover');
     
     // Change game state
     this.gameState = GameState.GAME_OVER;
