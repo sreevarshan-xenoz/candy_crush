@@ -16,7 +16,7 @@ import {
 
 export class GameScene extends Phaser.Scene {
   private board: BoardData = [];
-  private candies: Candy[][] = [];
+  private candies: (Candy | null)[][] = [];
   private selectedCandy: Candy | null = null;
   private gameState: GameState = GameState.IDLE;
   private score: number = 0;
