@@ -8,20 +8,16 @@
     <title>Candy Crush Clone</title>
   </head>
   <body>
-    <div id="app" class="game-container">
-      <div id="game-loading" class="game-card">
-        <h1 class="game-title">Lucky Night Shoots</h1>
-        <p class="game-text">Loading game assets...</p>
-        <div class="loading-bar-container w-full h-2 bg-game-dark rounded-full overflow-hidden">
-          <div id="loading-bar" class="h-full bg-game-primary w-0 transition-all duration-300"></div>
-        </div>
+    <div id="game-ui">
+      <div id="game-controls">
+        <span id="score-label">Score: 0</span>
+        <span id="moves-label">Moves: 20</span>
+        <button id="rotate-left" class="btn btn-primary">Rotate Left</button>
+        <button id="rotate-right" class="btn btn-primary">Rotate Right</button>
       </div>
-      <div id="game-ui" class="hidden">
-        <!-- Game UI elements will be added here -->
-      </div>
-      <div id="game-canvas-container">
-        <!-- Phaser canvas will be mounted here -->
-      </div>
+    </div>
+    <div id="game-canvas-container">
+      <!-- Phaser canvas will be mounted here -->
     </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
