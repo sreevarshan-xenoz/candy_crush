@@ -211,6 +211,7 @@ export class GameScene extends Phaser.Scene {
         if (candyData && candy) {
           // Update existing candy
           candy.update(candyData);
+          candy.moveToCell(candyData.row, candyData.col);
         } else if (candyData && !candy) {
           // Create new candy
           this.candies[row][col] = new Candy(this, candyData);
