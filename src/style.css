@@ -1,96 +1,54 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap');
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
-}
-
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
-
-#app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vanilla:hover {
-  filter: drop-shadow(0 0 2em #3178c6aa);
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
-}
-
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
+@layer base {
+  html, body {
+    @apply h-full w-full m-0 p-0 overflow-hidden bg-game-dark text-game-light;
+    font-family: 'Inter', sans-serif;
   }
-  a:hover {
-    color: #747bff;
+  
+  #app {
+    @apply h-full w-full flex flex-col items-center justify-center;
   }
-  button {
-    background-color: #f9f9f9;
+}
+
+@layer components {
+  .btn {
+    @apply px-4 py-2 rounded-md font-medium transition-all duration-200;
+  }
+  
+  .btn-primary {
+    @apply bg-game-primary text-white hover:bg-opacity-90;
+  }
+  
+  .btn-secondary {
+    @apply bg-game-secondary text-white hover:bg-opacity-90;
+  }
+  
+  .btn-accent {
+    @apply bg-game-accent text-game-dark hover:bg-opacity-90;
+  }
+  
+  .game-container {
+    @apply relative w-full h-full flex flex-col items-center justify-center;
+  }
+  
+  .game-title {
+    @apply font-game text-3xl md:text-5xl text-game-accent mb-8;
+  }
+  
+  .game-subtitle {
+    @apply font-game text-xl md:text-2xl text-game-secondary mb-4;
+  }
+  
+  .game-text {
+    @apply text-base md:text-lg mb-4;
+  }
+  
+  .game-card {
+    @apply bg-game-dark bg-opacity-80 rounded-lg p-6 shadow-lg border border-game-primary border-opacity-30;
   }
 }

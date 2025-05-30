@@ -1,13 +1,28 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + TS</title>
+    <meta name="description" content="Lucky Night Shoots - A unique match-3 puzzle game with strategic elements" />
+    <title>Lucky Night Shoots</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app" class="game-container">
+      <div id="game-loading" class="game-card">
+        <h1 class="game-title">Lucky Night Shoots</h1>
+        <p class="game-text">Loading game assets...</p>
+        <div class="loading-bar-container w-full h-2 bg-game-dark rounded-full overflow-hidden">
+          <div id="loading-bar" class="h-full bg-game-primary w-0 transition-all duration-300"></div>
+        </div>
+      </div>
+      <div id="game-ui" class="hidden">
+        <!-- Game UI elements will be added here -->
+      </div>
+      <div id="game-canvas-container" class="hidden">
+        <!-- Phaser canvas will be mounted here -->
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
