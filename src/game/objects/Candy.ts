@@ -5,7 +5,7 @@ import type { CandyData } from '../utils/helpers';
 export class Candy extends Phaser.GameObjects.Sprite {
   private candyData: CandyData;
   private specialEffect: Phaser.GameObjects.Sprite | null = null;
-  private specialParticles: Phaser.GameObjects.Particles.ParticleEmitterManager | null = null;
+  private specialParticles: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
   
   constructor(scene: Phaser.Scene, candyData: CandyData) {
     super(scene, candyData.x, candyData.y, 'candy');
@@ -109,11 +109,7 @@ export class Candy extends Phaser.GameObjects.Sprite {
   }
   
   private addRainbowParticles(): void {
-    // Create a particle manager
-    this.specialParticles = this.scene.add.particles(0, 0, 'particle');
-    
-    // Create an emitter
-    this.specialParticles.createEmitter({
+    const particles = this.scene.add.particles(0, 0, 'particle', {
       x: this.x,
       y: this.y,
       frequency: 100,
@@ -126,6 +122,7 @@ export class Candy extends Phaser.GameObjects.Sprite {
       blendMode: 'ADD',
       emitting: true
     });
+    this.specialParticles = particles;
   }
   
   public playSwapAnimation(): void {
