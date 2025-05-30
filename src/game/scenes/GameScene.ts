@@ -59,6 +59,16 @@ export class GameScene extends Phaser.Scene {
       rotateRightBtn.addEventListener('click', () => this.onRotateButtonClick(true));
     }
     
+    // Wire up restart button
+    const restartBtn = document.getElementById('restart-btn');
+    if (restartBtn) {
+      restartBtn.addEventListener('click', () => {
+        const overlay = document.getElementById('game-over-overlay');
+        if (overlay) overlay.style.display = 'none';
+        this.initGame();
+      });
+    }
+    
     // Update HTML UI
     this.updateHtmlUI();
   }
@@ -319,14 +329,10 @@ export class GameScene extends Phaser.Scene {
   }
   
   private gameOver(): void {
-    // Play game over sound
-    // this.sound.play('gameover');
-    
-    // Change game state
     this.gameState = GameState.GAME_OVER;
-    
-    // Show game over UI
-    // Optionally, show a game over overlay in HTML
+    // Show game over overlay
+    const overlay = document.getElementById('game-over-overlay');
+    if (overlay) overlay.style.display = 'flex';
   }
   
   private updateGameState(): void {

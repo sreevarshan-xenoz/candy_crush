@@ -19,6 +19,12 @@
     <div id="game-canvas-container">
       <!-- Phaser canvas will be mounted here -->
     </div>
+    <div id="game-over-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(30,40,60,0.92); z-index:1000; display:flex; flex-direction:column; align-items:center; justify-content:center;">
+      <div style="background:#22304a; border-radius:18px; padding:40px 60px; box-shadow:0 4px 32px rgba(0,0,0,0.3); text-align:center;">
+        <h2 style="color:#ffe066; font-size:2.5rem; margin-bottom:1.5rem;">Game Over!</h2>
+        <button id="restart-btn" class="btn btn-primary" style="font-size:1.2rem; padding:12px 32px;">Restart</button>
+      </div>
+    </div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
