@@ -11,7 +11,8 @@ import {
   fillEmptyBoard, 
   refillBoard, 
   rotateBoard, 
-  swapCandies 
+  swapCandies, 
+  hasPossibleMoves 
 } from '../utils/helpers';
 
 export class GameScene extends Phaser.Scene {
@@ -117,87 +118,89 @@ export class GameScene extends Phaser.Scene {
   }
   
   private onCandyClick(row: number, col: number): void {
-    // Ignore clicks if game is not in idle state
-    if (this.gameState !== GameState.IDLE) {
-      return;
-    }
+    if (this.gameState !== GameState.IDLE) return;
     const candy = this.candies[row][col];
     if (!candy) return;
-    // If no candy is selected, select this one
     if (!this.selectedCandy) {
       this.selectedCandy = candy;
       candy.setSelected(true);
       return;
     }
-    // If the same candy is clicked, deselect it
     if (this.selectedCandy === candy) {
       this.selectedCandy.setSelected(false);
       this.selectedCandy = null;
       return;
     }
-    // Get the selected candy's position
     const selectedRow = this.selectedCandy.getCandyData().row;
     const selectedCol = this.selectedCandy.getCandyData().col;
-    // Check if the candies are adjacent
-    const isAdjacent = 
+    const isAdjacent =
       (Math.abs(row - selectedRow) === 1 && col === selectedCol) ||
       (Math.abs(col - selectedCol) === 1 && row === selectedRow);
     if (isAdjacent) {
-      // Swap the candies
-      this.swapCandies(selectedRow, selectedCol, row, col);
+      // Only allow swap if it results in a match
+      if (this.wouldSwapResultInMatch(selectedRow, selectedCol, row, col)) {
+        this.swapCandies(selectedRow, selectedCol, row, col);
+      } else {
+        // Invalid swap: shake both candies
+        this.shakeCandy(this.selectedCandy);
+        this.shakeCandy(candy);
+        this.selectedCandy.setSelected(false);
+        this.selectedCandy = null;
+      }
     } else {
-      // Deselect the current candy and select the new one
       this.selectedCandy.setSelected(false);
       this.selectedCandy = candy;
       candy.setSelected(true);
     }
   }
   
+  private wouldSwapResultInMatch(row1: number, col1: number, row2: number, col2: number): boolean {
+    // Use the helper's logic
+    const board = this.board;
+    // Make a shallow copy of the board
+    const testBoard = board.map(row => row.map(cell => cell ? { ...cell } : null));
+    swapCandies(testBoard, row1, col1, row2, col2);
+    const matches = findAllMatches(testBoard);
+    return matches.length > 0;
+  }
+  
+  private shakeCandy(candy: Candy) {
+    this.tweens.add({
+      targets: candy,
+      x: candy.x - 10,
+      duration: 50,
+      yoyo: true,
+      repeat: 2,
+      onComplete: () => {
+        candy.x = candy.candyData.x;
+      }
+    });
+  }
+  
   private onRotateButtonClick(clockwise: boolean): void {
-    // Ignore if game is not in idle state
-    if (this.gameState !== GameState.IDLE) {
-      return;
-    }
-    
-    // Decrease moves
+    if (this.gameState !== GameState.IDLE) return;
     this.movesLeft--;
     this.updateHtmlUI();
-    
-    // Play sound
-    // this.sound.play('rotate');
-    
-    // Rotate the board
     this.gameState = GameState.ROTATING;
     rotateBoard(this.board, clockwise);
-    
-    // Update candy sprites
     this.updateCandySprites();
-    
-    // Check for matches after rotation
     this.checkForMatches();
+    this.checkPossibleMovesOrGameOver();
   }
   
   private swapCandies(row1: number, col1: number, row2: number, col2: number): void {
-    // Decrease moves
     this.movesLeft--;
     this.updateHtmlUI();
-    // Play sound
-    // this.sound.play('swap');
-    // Clear selection
     if (this.selectedCandy) {
       this.selectedCandy.setSelected(false);
       this.selectedCandy = null;
     }
-    // Swap in the data model
     swapCandies(this.board, row1, col1, row2, col2);
-    // Update candy sprites
     this.updateCandySprites();
-    // Change game state
     this.gameState = GameState.SWAPPING;
-    // Wait for swap animation to complete
     this.time.delayedCall(300, () => {
-      // Check for matches
       this.checkForMatches();
+      this.checkPossibleMovesOrGameOver();
     });
   }
   
@@ -284,41 +287,27 @@ export class GameScene extends Phaser.Scene {
   }
   
   private applyGravity(): void {
-    // Apply gravity to the board
     const hasDropped = applyGravity(this.board);
-    
     if (hasDropped) {
-      // Update candy sprites
       this.updateCandySprites();
-      
-      // Change game state
       this.gameState = GameState.DROPPING;
-      
-      // Wait for drop animation to complete
       this.time.delayedCall(300, () => {
-        // Refill the board
         this.refillBoard();
+        this.checkPossibleMovesOrGameOver();
       });
     } else {
-      // No drops, check for matches again
       this.checkForMatches();
+      this.checkPossibleMovesOrGameOver();
     }
   }
   
   private refillBoard(): void {
-    // Refill empty cells
     refillBoard(this.board);
-    
-    // Update candy sprites
     this.updateCandySprites();
-    
-    // Change game state
     this.gameState = GameState.REFILLING;
-    
-    // Wait for refill animation to complete
     this.time.delayedCall(300, () => {
-      // Check for matches again
       this.checkForMatches();
+      this.checkPossibleMovesOrGameOver();
     });
   }
   
@@ -392,5 +381,11 @@ export class GameScene extends Phaser.Scene {
     if (scoreLabel) scoreLabel.textContent = `Score: ${this.score}`;
     const movesLabel = document.getElementById('moves-label');
     if (movesLabel) movesLabel.textContent = `Moves: ${this.movesLeft}`;
+  }
+  
+  private checkPossibleMovesOrGameOver(): void {
+    if (!hasPossibleMoves(this.board) || this.movesLeft <= 0) {
+      this.gameOver();
+    }
   }
 } 

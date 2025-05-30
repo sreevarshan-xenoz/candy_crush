@@ -419,4 +419,32 @@ export function calculateScore(matches: CandyData[][]): number {
   }
   
   return score;
+}
+
+export function hasPossibleMoves(board: BoardData): boolean {
+  for (let row = 0; row < BOARD_ROWS; row++) {
+    for (let col = 0; col < BOARD_COLS; col++) {
+      // Try swapping with right neighbor
+      if (col < BOARD_COLS - 1) {
+        if (wouldSwapResultInMatch(board, row, col, row, col + 1)) {
+          return true;
+        }
+      }
+      // Try swapping with bottom neighbor
+      if (row < BOARD_ROWS - 1) {
+        if (wouldSwapResultInMatch(board, row, col, row + 1, col)) {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+
+function wouldSwapResultInMatch(board: BoardData, row1: number, col1: number, row2: number, col2: number): boolean {
+  // Make a shallow copy of the board
+  const testBoard: BoardData = board.map(row => row.map(cell => cell ? { ...cell } : null));
+  swapCandies(testBoard, row1, col1, row2, col2);
+  const matches = findAllMatches(testBoard);
+  return matches.length > 0;
 } 

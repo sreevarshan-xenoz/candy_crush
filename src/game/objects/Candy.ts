@@ -3,7 +3,7 @@ import { CANDY_COLORS, CANDY_SIZE, SpecialCandyType } from '../config';
 import type { CandyData } from '../utils/helpers';
 
 export class Candy extends Phaser.GameObjects.Container {
-  private candyData: CandyData;
+  public candyData: CandyData;
   private shape: Phaser.GameObjects.Graphics;
   private specialEffect: Phaser.GameObjects.Sprite | null = null;
   private specialParticles: Phaser.GameObjects.Particles.ParticleEmitter | null = null;
