@@ -103,11 +103,12 @@ body {
   align-items: center;
   justify-content: center;
   gap: 24px;
-  background: rgba(44, 62, 80, 0.95);
-  border-radius: 12px;
-  padding: 16px 32px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  background: rgba(44, 62, 80, 0.98);
+  border-radius: 16px;
+  padding: 18px 36px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+  border: 1.5px solid #334e68;
 }
 
 #score-label, #moves-label {
@@ -129,12 +130,80 @@ body {
   align-items: center;
   width: 100vw;
   height: 80vh;
+  background: rgba(34,48,74,0.85);
+  border-radius: 24px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  border: 2.5px solid #334e68;
+  margin-bottom: 32px;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 canvas {
   display: block;
   margin: 0 auto;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
-  border-radius: 16px;
+  border-radius: 18px;
   background: #22304a;
+  transition: box-shadow 0.2s;
+}
+canvas:hover {
+  box-shadow: 0 0 32px 4px #ffe06644;
+}
+
+.fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (max-width: 900px) {
+  #game-canvas-container {
+    max-width: 100vw;
+    border-radius: 12px;
+    padding: 0;
+  }
+  .game-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 600px) {
+  #game-controls {
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px 8px;
+    font-size: 1rem;
+  }
+  #game-canvas-container {
+    height: 60vh;
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Candy hover effect */
+.candy-hover {
+  filter: brightness(1.15) drop-shadow(0 0 8px #ffe06688);
+  transition: filter 0.15s, transform 0.12s;
+  transform: scale(1.08);
+}
+
+.btn, .btn-primary {
+  transition: background 0.2s, box-shadow 0.2s, transform 0.1s;
+  box-shadow: 0 2px 8px rgba(44,62,80,0.08);
+}
+.btn-primary:hover, .btn-primary:focus {
+  background: #ffb347;
+  color: #22304a;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 4px 16px rgba(255,180,71,0.18);
+}
+.btn-primary:active {
+  background: #ffe066;
+  color: #22304a;
+  transform: scale(0.98);
 }

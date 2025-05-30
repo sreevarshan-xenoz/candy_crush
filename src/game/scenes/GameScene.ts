@@ -330,8 +330,10 @@ export class GameScene extends Phaser.Scene {
   
   private gameOver(): void {
     this.gameState = GameState.GAME_OVER;
-    // Show game over overlay
+    // Show game over overlay and set final score
     const overlay = document.getElementById('game-over-overlay');
+    const finalScore = document.getElementById('final-score');
+    if (finalScore) finalScore.textContent = String(this.score);
     if (overlay) overlay.style.display = 'flex';
   }
   

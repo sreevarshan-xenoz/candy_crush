@@ -26,12 +26,14 @@ export class Candy extends Phaser.GameObjects.Container {
     this.on('pointerover', () => {
       if (!this.candyData.isSwapping && !this.candyData.isDropping && !this.candyData.isRotating) {
         this.setScale(1.1);
+        this.setAlpha(0.9);
       }
     });
     
     this.on('pointerout', () => {
       if (!this.candyData.isSwapping && !this.candyData.isDropping && !this.candyData.isRotating) {
         this.setScale(1);
+        this.setAlpha(1);
       }
     });
   }
