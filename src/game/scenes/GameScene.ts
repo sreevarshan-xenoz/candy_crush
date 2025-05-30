@@ -33,24 +33,15 @@ export class GameScene extends Phaser.Scene {
   }
   
   preload(): void {
-    // Load candy sprites
-    this.load.spritesheet('candy', 'assets/candy.png', { 
-      frameWidth: 64, 
-      frameHeight: 64 
-    });
-    
     // Load special effect sprites
     this.load.image('special_horizontal', 'assets/special_horizontal.png');
     this.load.image('special_vertical', 'assets/special_vertical.png');
     this.load.image('special_bomb', 'assets/special_bomb.png');
     this.load.image('special_rainbow', 'assets/special_rainbow.png');
-    
     // Load particle
     this.load.image('particle', 'assets/particle.png');
-    
     // Load UI elements
     this.load.image('button', 'assets/button.png');
-    
     // Load sounds
     this.load.audio('swap', 'assets/sounds/swap.mp3');
     this.load.audio('match', 'assets/sounds/match.mp3');
@@ -218,41 +209,35 @@ export class GameScene extends Phaser.Scene {
     if (this.gameState !== GameState.IDLE) {
       return;
     }
-    
     const candy = this.candies[row][col];
     if (!candy) return;
-    
     // If no candy is selected, select this one
     if (!this.selectedCandy) {
       this.selectedCandy = candy;
-      candy.setTint(0xffff00);
+      candy.setSelected(true);
       return;
     }
-    
     // If the same candy is clicked, deselect it
     if (this.selectedCandy === candy) {
-      this.selectedCandy.clearTint();
+      this.selectedCandy.setSelected(false);
       this.selectedCandy = null;
       return;
     }
-    
     // Get the selected candy's position
     const selectedRow = this.selectedCandy.getCandyData().row;
     const selectedCol = this.selectedCandy.getCandyData().col;
-    
     // Check if the candies are adjacent
     const isAdjacent = 
       (Math.abs(row - selectedRow) === 1 && col === selectedCol) ||
       (Math.abs(col - selectedCol) === 1 && row === selectedRow);
-    
     if (isAdjacent) {
       // Swap the candies
       this.swapCandies(selectedRow, selectedCol, row, col);
     } else {
       // Deselect the current candy and select the new one
-      this.selectedCandy.clearTint();
+      this.selectedCandy.setSelected(false);
       this.selectedCandy = candy;
-      candy.setTint(0xffff00);
+      candy.setSelected(true);
     }
   }
   
@@ -288,25 +273,19 @@ export class GameScene extends Phaser.Scene {
     if (this.movesText) {
       this.movesText.setText(`Moves: ${this.movesLeft}`);
     }
-    
     // Play sound
     this.sound.play('swap');
-    
     // Clear selection
     if (this.selectedCandy) {
-      this.selectedCandy.clearTint();
+      this.selectedCandy.setSelected(false);
       this.selectedCandy = null;
     }
-    
     // Swap in the data model
     swapCandies(this.board, row1, col1, row2, col2);
-    
     // Update candy sprites
     this.updateCandySprites();
-    
     // Change game state
     this.gameState = GameState.SWAPPING;
-    
     // Wait for swap animation to complete
     this.time.delayedCall(300, () => {
       // Check for matches
