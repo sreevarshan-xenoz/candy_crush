@@ -20,13 +20,7 @@ export class GameScene extends Phaser.Scene {
   private selectedCandy: Candy | null = null;
   private gameState: GameState = GameState.IDLE;
   private score: number = 0;
-  private scoreText: Phaser.GameObjects.Text | null = null;
   private movesLeft: number = 20;
-  private movesText: Phaser.GameObjects.Text | null = null;
-  private gameOverText: Phaser.GameObjects.Text | null = null;
-  private restartButton: Phaser.GameObjects.Text | null = null;
-  private rotateLeftButton: Phaser.GameObjects.Text | null = null;
-  private rotateRightButton: Phaser.GameObjects.Text | null = null;
   
   constructor() {
     super({ key: 'GameScene' });
@@ -51,11 +45,21 @@ export class GameScene extends Phaser.Scene {
     // Initialize the game
     this.initGame();
     
-    // Create UI
-    this.createUI();
-    
     // Set up input handlers
     this.setupInput();
+    
+    // Wire up HTML rotate buttons
+    const rotateLeftBtn = document.getElementById('rotate-left');
+    if (rotateLeftBtn) {
+      rotateLeftBtn.addEventListener('click', () => this.onRotateButtonClick(false));
+    }
+    const rotateRightBtn = document.getElementById('rotate-right');
+    if (rotateRightBtn) {
+      rotateRightBtn.addEventListener('click', () => this.onRotateButtonClick(true));
+    }
+    
+    // Update HTML UI
+    this.updateHtmlUI();
   }
   
   update(): void {
@@ -75,13 +79,8 @@ export class GameScene extends Phaser.Scene {
     this.score = 0;
     this.movesLeft = 20;
     
-    // Hide game over UI
-    if (this.gameOverText) {
-      this.gameOverText.setVisible(false);
-    }
-    if (this.restartButton) {
-      this.restartButton.setVisible(false);
-    }
+    // Update HTML UI
+    this.updateHtmlUI();
   }
   
   private createCandies(): void {
@@ -103,77 +102,6 @@ export class GameScene extends Phaser.Scene {
     }
   }
   
-  private createUI(): void {
-    // Create score text
-    this.scoreText = this.add.text(10, 10, `Score: ${this.score}`, {
-      fontFamily: 'Arial',
-      fontSize: '24px',
-      color: '#ffffff'
-    });
-    
-    // Create moves text
-    this.movesText = this.add.text(10, 40, `Moves: ${this.movesLeft}`, {
-      fontFamily: 'Arial',
-      fontSize: '24px',
-      color: '#ffffff'
-    });
-    
-    // Create rotate buttons
-    this.rotateLeftButton = this.add.text(10, 80, 'Rotate Left', {
-      fontFamily: 'Arial',
-      fontSize: '18px',
-      color: '#ffffff',
-      backgroundColor: '#4ECDC4',
-      padding: { x: 10, y: 5 }
-    });
-    this.rotateLeftButton.setInteractive();
-    
-    this.rotateRightButton = this.add.text(150, 80, 'Rotate Right', {
-      fontFamily: 'Arial',
-      fontSize: '18px',
-      color: '#ffffff',
-      backgroundColor: '#4ECDC4',
-      padding: { x: 10, y: 5 }
-    });
-    this.rotateRightButton.setInteractive();
-    
-    // Create game over text (hidden initially)
-    this.gameOverText = this.add.text(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 - 50,
-      'Game Over!',
-      {
-        fontFamily: 'Arial',
-        fontSize: '48px',
-        color: '#FF6B6B'
-      }
-    );
-    this.gameOverText.setOrigin(0.5);
-    this.gameOverText.setVisible(false);
-    
-    // Create restart button (hidden initially)
-    this.restartButton = this.add.text(
-      this.cameras.main.width / 2,
-      this.cameras.main.height / 2 + 50,
-      'Restart',
-      {
-        fontFamily: 'Arial',
-        fontSize: '24px',
-        color: '#ffffff',
-        backgroundColor: '#4ECDC4',
-        padding: { x: 20, y: 10 }
-      }
-    );
-    this.restartButton.setOrigin(0.5);
-    this.restartButton.setInteractive();
-    this.restartButton.setVisible(false);
-    
-    // Add restart button event
-    this.restartButton.on('pointerdown', () => {
-      this.initGame();
-    });
-  }
-  
   private setupInput(): void {
     // Add click event to each candy
     for (let row = 0; row < BOARD_ROWS; row++) {
@@ -185,19 +113,6 @@ export class GameScene extends Phaser.Scene {
           });
         }
       }
-    }
-    
-    // Add rotate button events
-    if (this.rotateLeftButton) {
-      this.rotateLeftButton.on('pointerdown', () => {
-        this.onRotateButtonClick(false);
-      });
-    }
-    
-    if (this.rotateRightButton) {
-      this.rotateRightButton.on('pointerdown', () => {
-        this.onRotateButtonClick(true);
-      });
     }
   }
   
@@ -246,9 +161,7 @@ export class GameScene extends Phaser.Scene {
     
     // Decrease moves
     this.movesLeft--;
-    if (this.movesText) {
-      this.movesText.setText(`Moves: ${this.movesLeft}`);
-    }
+    this.updateHtmlUI();
     
     // Play sound
     // this.sound.play('rotate');
@@ -267,9 +180,7 @@ export class GameScene extends Phaser.Scene {
   private swapCandies(row1: number, col1: number, row2: number, col2: number): void {
     // Decrease moves
     this.movesLeft--;
-    if (this.movesText) {
-      this.movesText.setText(`Moves: ${this.movesLeft}`);
-    }
+    this.updateHtmlUI();
     // Play sound
     // this.sound.play('swap');
     // Clear selection
@@ -326,9 +237,7 @@ export class GameScene extends Phaser.Scene {
       // Calculate score
       const matchScore = calculateScore(matches);
       this.score += matchScore;
-      if (this.scoreText) {
-        this.scoreText.setText(`Score: ${this.score}`);
-      }
+      this.updateHtmlUI();
       
       // Mark matched candies as destroyed
       for (const match of matches) {
@@ -427,12 +336,7 @@ export class GameScene extends Phaser.Scene {
     this.gameState = GameState.GAME_OVER;
     
     // Show game over UI
-    if (this.gameOverText) {
-      this.gameOverText.setVisible(true);
-    }
-    if (this.restartButton) {
-      this.restartButton.setVisible(true);
-    }
+    // Optionally, show a game over overlay in HTML
   }
   
   private updateGameState(): void {
@@ -480,5 +384,12 @@ export class GameScene extends Phaser.Scene {
       }
     }
     return true;
+  }
+  
+  private updateHtmlUI(): void {
+    const scoreLabel = document.getElementById('score-label');
+    if (scoreLabel) scoreLabel.textContent = `Score: ${this.score}`;
+    const movesLabel = document.getElementById('moves-label');
+    if (movesLabel) movesLabel.textContent = `Moves: ${this.movesLeft}`;
   }
 } 
