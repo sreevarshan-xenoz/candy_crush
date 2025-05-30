@@ -216,4 +216,38 @@ export class Candy extends Phaser.GameObjects.Sprite {
   public getSpecialType(): SpecialCandyType {
     return this.candyData.specialType;
   }
+
+  public setSelected(selected: boolean): void {
+    if (selected) {
+      this.setTint(0xffffff);
+      this.setScale((CANDY_SIZE / this.width) * 1.1);
+    } else {
+      this.clearTint();
+      this.setScale(CANDY_SIZE / this.width);
+    }
+  }
+
+  public getRow(): number {
+    return this.candyData.row;
+  }
+
+  public getCol(): number {
+    return this.candyData.col;
+  }
+
+  public moveTo(row: number, col: number): void {
+    this.candyData.row = row;
+    this.candyData.col = col;
+    this.candyData.x = col * CANDY_SIZE + CANDY_SIZE / 2;
+    this.candyData.y = row * CANDY_SIZE + CANDY_SIZE / 2;
+    this.x = this.candyData.x;
+    this.y = this.candyData.y;
+  }
+
+  public isIdle(): boolean {
+    return !this.candyData.isSwapping && 
+           !this.candyData.isDropping && 
+           !this.candyData.isRotating && 
+           !this.candyData.isDestroyed;
+  }
 } 
