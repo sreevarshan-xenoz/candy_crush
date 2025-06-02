@@ -13,7 +13,7 @@ export class Candy extends Phaser.GameObjects.Container {
     this.candyData = candyData;
     
     // Draw the shape for this candy type
-    this.shape = this.drawCandyShape(candyData.type);
+    this.shape = this.drawCandyShape(candyData.type, candyData.specialType);
     this.add(this.shape);
     this.setSize(CANDY_SIZE, CANDY_SIZE);
     this.setInteractive(new Phaser.Geom.Circle(CANDY_SIZE/2, CANDY_SIZE/2, CANDY_SIZE/2), Phaser.Geom.Circle.Contains);
@@ -38,7 +38,7 @@ export class Candy extends Phaser.GameObjects.Container {
     });
   }
   
-  private drawCandyShape(type: number): Phaser.GameObjects.Graphics {
+  private drawCandyShape(type: number, specialType: SpecialCandyType = SpecialCandyType.NONE): Phaser.GameObjects.Graphics {
     const graphics = this.scene.add.graphics();
     graphics.clear();
     const color = CANDY_COLORS[type % CANDY_COLORS.length];
@@ -47,6 +47,7 @@ export class Candy extends Phaser.GameObjects.Container {
     const cx = CANDY_SIZE / 2;
     const cy = CANDY_SIZE / 2;
     const r = CANDY_SIZE / 2 - 4;
+    // Draw base shape
     switch (type) {
       case 0: // Circle
         graphics.fillCircle(cx, cy, r);
@@ -70,6 +71,36 @@ export class Candy extends Phaser.GameObjects.Container {
       default:
         graphics.fillCircle(cx, cy, r);
         graphics.strokeCircle(cx, cy, r);
+    }
+    // Special candy overlays
+    if (specialType === SpecialCandyType.RAINBOW) {
+      // Draw a multi-color starburst
+      for (let i = 0; i < 6; i++) {
+        graphics.lineStyle(3, CANDY_COLORS[i], 1);
+        graphics.beginPath();
+        graphics.arc(cx, cy, r + 4, (i / 6) * Math.PI * 2, ((i + 1) / 6) * Math.PI * 2);
+        graphics.strokePath();
+      }
+    } else if (specialType === SpecialCandyType.LINE_CLEAR_H) {
+      // Draw a white horizontal line
+      graphics.lineStyle(6, 0xffffff, 0.85);
+      graphics.beginPath();
+      graphics.moveTo(cx - r + 4, cy);
+      graphics.lineTo(cx + r - 4, cy);
+      graphics.strokePath();
+    } else if (specialType === SpecialCandyType.LINE_CLEAR_V) {
+      // Draw a white vertical line
+      graphics.lineStyle(6, 0xffffff, 0.85);
+      graphics.beginPath();
+      graphics.moveTo(cx, cy - r + 4);
+      graphics.lineTo(cx, cy + r - 4);
+      graphics.strokePath();
+    } else if (specialType === SpecialCandyType.BOMB) {
+      // Draw a bold dot in the center
+      graphics.fillStyle(0x222222, 1);
+      graphics.fillCircle(cx, cy, r * 0.35);
+      graphics.lineStyle(2, 0xffffff, 0.7);
+      graphics.strokeCircle(cx, cy, r * 0.35);
     }
     return graphics;
   }
@@ -124,9 +155,9 @@ export class Candy extends Phaser.GameObjects.Container {
     this.candyData = candyData;
     this.x = candyData.x;
     this.y = candyData.y;
-    // Redraw shape if type changed
+    // Redraw shape if type or specialType changed
     this.remove(this.shape);
-    this.shape = this.drawCandyShape(candyData.type);
+    this.shape = this.drawCandyShape(candyData.type, candyData.specialType);
     this.add(this.shape);
     
     // Update special effect if needed
